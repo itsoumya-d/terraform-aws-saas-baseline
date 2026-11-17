@@ -19,9 +19,26 @@ This module does exactly that, with validation, a mocked-provider plan test and 
 ├── main.tf                  # root composition
 ├── variables.tf             # validated inputs
 ├── outputs.tf
-├── modules/saas_baseline    # artifact bucket + state table
-└── tests/baseline.tftest.hcl
+├── modules/saas_baseline       # artifact bucket + state table
+├── modules/platform_governance # landing-zone VPC, IAM, logging, FinOps budget
+├── tests/baseline.tftest.hcl
+└── tests/platform_governance.tftest.hcl
 ```
+
+## Platform governance module
+
+The platform governance module adds the controls intentionally excluded from the
+baseline so the composition models a reviewable landing zone:
+
+- **Networking** — a platform VPC and a private subnet derived with `cidrsubnet`.
+- **Identity and access management** — a least-privilege operator role scoped to
+  artifact reads and log writes.
+- **Observability** — a centralised CloudWatch log group with configurable retention.
+- **FinOps** — a monthly cost budget with an optional threshold alert.
+
+Every resource carries consistent environment, cost-centre and ownership tags for
+chargeback and governance reporting. All inputs have safe defaults, so existing
+users of the baseline are unaffected.
 
 ## Test and CI
 
